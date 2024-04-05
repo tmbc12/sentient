@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
   <meta charset="UTF-8">
   <title>CodePen - GPTs.Fan Logo</title>
   <link rel="stylesheet" href="./style.css">
+
 </head>
 <body>
 <!-- partial:index.partial.html -->
@@ -221,24 +222,7 @@ void main() {
 
 <div id="container" touch-action="none"></div>
 <!-- partial -->
-<script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/982762/ccapture.js'></script>
-<script>
-document.getElementById('container').addEventListener('mousemove', function(e) {
-  let rect = e.target.getBoundingClientRect();
-  uniforms.u_mouse.value.x = (e.clientX - rect.left) / rect.width;
-  uniforms.u_mouse.value.y = 1.0 - (e.clientY - rect.top) / rect.height;
-  e.preventDefault();
-});
+  <script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/982762/ccapture.js'></script><script  src="./script.js"></script>
 
-document.getElementById('container').addEventListener('touchmove', function(e) {
-  let rect = e.target.getBoundingClientRect();
-  let touch = e.touches[0];
-  if (touch) {
-    uniforms.u_mouse.value.x = (touch.clientX - rect.left) / rect.width;
-    uniforms.u_mouse.value.y = 1.0 - (touch.clientY - rect.top) / rect.height;
-    e.preventDefault();
-  }
-});
-</script>
 </body>
 </html>
