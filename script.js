@@ -1,18 +1,12 @@
-/*
-Most of the stuff in here is just bootstrapping. Essentially it's just
-setting ThreeJS up so that it renders a flat surface upon which to draw 
-the shader. The only thing to see here really is the uniforms sent to 
-the shader. Apart from that all of the magic happens in the HTML view
-under the fragment shader.
-*/
-
 let container;
 let camera, scene, renderer;
 let uniforms;
 
-let loader=new THREE.TextureLoader();
+let loader = new THREE.TextureLoader();
 let texture, _500;
-loader.setCrossOrigin("anonymous");
+
+loader.crossOrigin = ""; // Handle cross-origin requests properly
+
 loader.load(
   'https://s3-us-west-2.amazonaws.com/s.cdpn.io/982762/noise.png',
   (tex) => {
@@ -23,21 +17,14 @@ loader.load(
     
     loader.load(
       'https://i.ibb.co/3Wj2D3R/Frame-427322079-1.png',  
-          (tex) => {
+      (tex) => {
         _500 = tex;
-        
         init();
         animate();
       }
     );
   }
 );
-
-// qstar  https://i.ibb.co/gFYchjT/Frame-427322082.png
-// gibbon https://i.ibb.co/2MFNV0Y/Frame-427322080.png
-// hom https://i.ibb.co/VjDt0RZ/Group-427321728.png
-// senti https://i.ibb.co/K9DnNzt/Frame-427322079.png
-// tmbc https://i.ibb.co/1zxnybD/Frame-427322078-1.png
 
 function init() {
   container = document.getElementById('container');
@@ -55,13 +42,14 @@ function init() {
     u_pxaspect: { type: 'f', value: window.devicePixelRatio },
     u_noise: { type: "t", value: texture },
     u_text500: { type: "t", value: _500 },
-    u_mouse: { type: "v2", value: new THREE.Vector2(-.1, -.1) } };
-
+    u_mouse: { type: "v2", value: new THREE.Vector2() }
+  };
 
   var material = new THREE.ShaderMaterial({
     uniforms: uniforms,
     vertexShader: document.getElementById('vertexShader').textContent,
-    fragmentShader: document.getElementById('fragmentShader').textContent });
+    fragmentShader: document.getElementById('fragmentShader').textContent
+  });
 
   material.extensions.derivatives = true;
 
@@ -73,15 +61,26 @@ function init() {
 
   container.appendChild(renderer.domElement);
 
+  // Create an h1 element
+  const heading = document.createElement('h1');
+  heading.textContent = 'Coming Soon !';
+
+  // Apply CSS styling to center the heading horizontally and vertically
+  heading.style.position = 'absolute';
+  heading.style.top = '90%';
+  heading.style.left = '50%';
+  heading.style.transform = 'translate(-50%, -50%)';
+  heading.style.color = 'white';
+
+  // Append the h1 element to the container
+  container.appendChild(heading);
+
   onWindowResize();
   window.addEventListener('resize', onWindowResize, false);
 
-  document.addEventListener('pointermove', e => {
-    let ratio = window.innerHeight / window.innerWidth;
-    uniforms.u_mouse.value.x = (e.pageX - window.innerWidth / 2) / window.innerWidth / ratio;
-    uniforms.u_mouse.value.y = (e.pageY - window.innerHeight / 2) / window.innerHeight * -1;
-
-    e.preventDefault();
+  document.addEventListener('mousemove', e => {
+    uniforms.u_mouse.value.x = (e.clientX / window.innerWidth) * 2 - 1;
+    uniforms.u_mouse.value.y = -(e.clientY / window.innerHeight) * 2 + 1;
   });
 }
 
@@ -91,15 +90,10 @@ function onWindowResize(event) {
   uniforms.u_resolution.value.y = renderer.domElement.height;
 }
 
-function animate(delta) {
+function animate() {
   requestAnimationFrame(animate);
-  render(delta);
+  render();
 }
-
-
-
-
-
 
 let capturer = new CCapture({
   verbose: true,
@@ -107,7 +101,8 @@ let capturer = new CCapture({
   // motionBlurFrames: 4,
   quality: 90,
   format: 'webm',
-  workersPath: 'js/' });
+  workersPath: 'js/'
+});
 
 let capturing = false;
 
@@ -126,10 +121,8 @@ toggleCapture = function () {
 
 window.addEventListener('keyup', function (e) {if (e.keyCode == 68) toggleCapture();});
 
-let then = 0;
-function render(delta) {
-
-  uniforms.u_time.value = delta * 0.0005;
+function render() {
+  uniforms.u_time.value += 0.05;
   renderer.render(scene, camera);
 
   if (capturing) {
