@@ -5,7 +5,7 @@ let uniforms;
 let loader = new THREE.TextureLoader();
 let texture, _500;
 
-loader.crossOrigin = ""; // Handle cross-origin requests properly
+loader.crossOrigin = "";
 
 loader.load(
   'https://s3-us-west-2.amazonaws.com/s.cdpn.io/982762/noise.png',
@@ -78,10 +78,20 @@ function init() {
   onWindowResize();
   window.addEventListener('resize', onWindowResize, false);
 
-  document.addEventListener('mousemove', e => {
-    uniforms.u_mouse.value.x = (e.clientX / window.innerWidth) * 2 - 1;
-    uniforms.u_mouse.value.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  document.addEventListener('pointermove', e => {
+    e.preventDefault();
+    const pos = getRelativeMousePosition(e);
+    uniforms.u_mouse.value.x = pos.x;
+    uniforms.u_mouse.value.y = pos.y;
   });
+}
+
+function getRelativeMousePosition(event) {
+  const rect = renderer.domElement.getBoundingClientRect();
+  return {
+    x: (event.clientX - rect.left) / rect.width * 2 - 1,
+    y: -(event.clientY - rect.top) / rect.height * 2 + 1
+  };
 }
 
 function onWindowResize(event) {
@@ -95,37 +105,7 @@ function animate() {
   render();
 }
 
-let capturer = new CCapture({
-  verbose: true,
-  framerate: 60,
-  // motionBlurFrames: 4,
-  quality: 90,
-  format: 'webm',
-  workersPath: 'js/'
-});
-
-let capturing = false;
-
-isCapturing = function (val) {
-  if (val === false && window.capturing === true) {
-    capturer.stop();
-    capturer.save();
-  } else if (val === true && window.capturing === false) {
-    capturer.start();
-  }
-  capturing = val;
-};
-toggleCapture = function () {
-  isCapturing(!capturing);
-};
-
-window.addEventListener('keyup', function (e) {if (e.keyCode == 68) toggleCapture();});
-
 function render() {
   uniforms.u_time.value += 0.05;
   renderer.render(scene, camera);
-
-  if (capturing) {
-    capturer.capture(renderer.domElement);
-  }
 }
