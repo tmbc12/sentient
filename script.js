@@ -71,7 +71,7 @@ function init() {
 
   // Create an h1 element
   const heading = document.createElement('h1');
-  heading.textContent = 'Coming Soon !';
+  heading.textContent = '';
 
   // Apply CSS styling to center the heading horizontally and vertically
   heading.style.position = 'absolute';
