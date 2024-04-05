@@ -16,7 +16,7 @@ loader.load(
     texture.minFilter = THREE.LinearFilter;
     
     loader.load(
-      'https://i.ibb.co/KcvPqH6/Frame-427322079-3.png',  
+      'https://i.ibb.co/XpK1hQY/Frame-427322079-1.png',  
       (tex) => {
         _500 = tex;
         init();
