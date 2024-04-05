@@ -5,7 +5,7 @@ let uniforms;
 let loader = new THREE.TextureLoader();
 let texture, _500;
 
-loader.crossOrigin = "";
+loader.crossOrigin = "anonymous";
 
 loader.load(
   'https://s3-us-west-2.amazonaws.com/s.cdpn.io/982762/noise.png',
@@ -21,8 +21,16 @@ loader.load(
         _500 = tex;
         init();
         animate();
+      },
+      undefined,
+      (error) => {
+        console.error('Error loading image:', error);
       }
     );
+  },
+  undefined,
+  (error) => {
+    console.error('Error loading image:', error);
   }
 );
 
